@@ -1,0 +1,5 @@
+kivy==2.1.0
+kivymd==1.1.1
+pandas==1.1.5
+beautifulsoup4==4.9.3
+pyjnius==1.6.1

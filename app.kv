@@ -1,0 +1,482 @@
+Screen:    
+    MDNavigationLayout:
+        ScreenManager:
+            id: screen_manager
+            Screen:
+                name: "offers"
+                MDBoxLayout:
+                    orientation: 'vertical'
+                    MDTopAppBar:
+                        id: top_app_bar
+                        title: 'Project_m2 - Oferty'
+                        left_action_items: [["magnify", lambda x: nav_drawer.set_state('toggle')]]
+                        right_action_items: [["tools", lambda x: param_drawer.set_state('toggle')]]
+                        elevation: 2
+                        
+                    ScrollView:
+                        id: scrollview
+                        # on_scroll_stop: app.on_scroll_stop()  # Wywołanie na końcu przewijania
+                        MDList:
+                            id: list    
+
+            Screen:
+
+########################################################################################
+############ EKRAN ŁADOWANIA ###########################################################
+
+                name: 'loading_screen'
+                BoxLayout:
+                    orientation: 'vertical'
+                    spacing: dp(20)
+                    padding: dp(20)
+
+                    MDLabel:
+                        id: offer_count_label
+                        text: "Wczytano 0 ofert"
+                        halign: "center"
+                        font_style: "H5"  # Ustawiamy większą czcionkę
+                        
+                    MDLabel:
+                        id: loading_label
+                        text: "Proszę czekać, ładowanie ofert z serwisu..."
+                        halign: "center"
+                        size_hint_y: None
+                        font_style: "H6"
+                    
+                    MDProgressBar:
+                        id: progress_bar
+                        value: 0
+                        max: 100
+                        height: dp(20)
+                        size_hint_y: None
+                        color: app.theme_cls.primary_color
+
+########################################################################################
+############ PANEL LEWY ################################################################
+
+        MDNavigationDrawer:
+            id: nav_drawer
+            anchor: "left"
+            width: root.width / 1.2  # Ustawienie szerokości na 100% bez zaokrągleń
+            radius: [0, 0, 0, 0]     # Usuwanie zaokrągleń
+
+            ScrollView:
+
+                MDBoxLayout:
+                    orientation: 'vertical'
+                    padding: 10
+                    spacing: 5
+                    pos_hint: {"top": 1}
+                    adaptive_height: True
+                    
+                    MDBoxLayout:
+                        orientation: 'vertical'
+                        size_hint_y: None
+                        padding: 10
+                        spacing: 10
+                        pos_hint: {"top": 1}
+                        adaptive_height: True
+
+                        MDLabel:
+                            text: 'Parametry wyszukiwania:'
+                            font_style: 'Subtitle1'
+                            size_hint_y: None
+                            height: self.texture_size[1]  # Automatyczna wysokość na podstawie tekstu
+                            halign: 'left'
+
+                        MDTextField:
+                            id: wojewodztwo_field
+                            hint_text: "Województwo"
+                            text: "Małopolskie"
+                            icon_left: "home-city"
+                            readonly: True  # Ustawiamy pole na tylko do odczytu
+                            icon_left_color_normal: [0, 0, 1, 0.7]
+                            mode: "rectangle"
+                            on_touch_down: app.ui_manager.show_wojewodztwa_menu(self)
+                            on_text_validate: miasto.focus = True
+
+                        MDTextField:
+                            id: miasto
+                            hint_text: 'Miasto:'
+                            icon_left: 'city'
+                            mode: "rectangle"
+                            on_text: app.ui_manager.check_inputs()
+                            icon_left_color_normal: [0, 0, 1, 0.7]
+                            on_text_validate: pokoje.focus = True
+
+                        MDTextField:
+                            id: pokoje
+                            hint_text: 'Ilość pokoi:'
+                            icon_left: 'bed'
+                            mode: "rectangle"
+                            input_filter: 'int'
+                            text: "2"
+                            on_text: app.ui_manager.check_inputs()
+                            icon_left_color_normal: [1, 0, 0, 0.7]
+                            input_type: "number"
+                            on_text_validate: powierzchnia_od.focus = True
+
+                        MDTextField:
+                            id: powierzchnia_od
+                            hint_text: 'Powierzchnia w m² od:'
+                            icon_left: 'move-resize'
+                            mode: "rectangle"
+                            input_filter: 'int'
+                            text: "50"
+                            on_text: app.ui_manager.check_inputs()
+                            icon_left_color_normal: [0, 1, 0, 0.7]
+                            input_type: "number"
+                            on_text_validate: powierzchnia_do.focus = True
+
+                        MDTextField:
+                            id: powierzchnia_do
+                            hint_text: 'Powierzchnia w m² do:'
+                            icon_left: 'move-resize'
+                            mode: "rectangle"
+                            input_filter: 'int'
+                            text: "70"
+                            on_text: app.ui_manager.check_inputs()
+                            icon_left_color_normal: [0, 1, 0, 0.7]
+                            input_type: "number"
+                            on_text_validate: cena_od.focus = True
+                            
+                        MDTextField:
+                            id: cena_od
+                            hint_text: 'Cena od:'
+                            icon_left: 'cash-multiple'
+                            mode: "rectangle"
+                            input_filter: 'int'
+                            text: "300000"
+                            on_text: app.ui_manager.check_inputs()
+                            icon_left_color_normal: [1, 0.5, 0, 0.7]
+                            input_type: "number"
+                            on_text_validate: cena_do.focus = True
+
+                        MDTextField:
+                            id: cena_do
+                            hint_text: 'Cena do:'
+                            icon_left: 'cash-multiple'
+                            mode: "rectangle"
+                            input_filter: 'int'
+                            text: "600000"
+                            on_text: app.ui_manager.check_inputs()
+                            icon_left_color_normal: [1, 0.5, 0, 0.7]
+                            input_type: "number"
+                            on_text_validate: liczba_stron.focus = True
+
+                        MDTextField:
+                            id: liczba_stron
+                            hint_text: 'Ile stron w każdym serwisie mam przeszukać?'
+                            icon_left: 'file-restore'
+                            mode: "rectangle"
+                            input_filter: 'int'
+                            text: "1"
+                            on_text: app.ui_manager.check_inputs()
+                            input_type: "number"
+                            on_text_validate: szukaj_button.focus = True
+
+                    MDBoxLayout:
+                        orientation: 'vertical'
+                        size_hint_y: None
+                        height: self.minimum_height
+                        pos_hint: {"center_x": 0.5, "bottom": 1}  # Umieszczenie przycisku na dole ekranu
+                        padding: [10, 10, 10, 10]
+
+                        MDRectangleFlatIconButton:
+                            id: szukaj_button
+                            icon: 'home-search'
+                            text: 'Szukaj'
+                            md_bg_color: app.theme_cls.primary_color
+                            text_color: 1, 1, 1, 1
+                            icon_color: 1, 1, 1, 1
+                            pos_hint: {"center_x": 0.5}
+                            size_hint_x: 1  # Zajęcie 100% szerokości
+                            radius: [0]
+                            disabled: True
+                            on_release: app.ui_manager.on_search_button_pressed()
+
+                            
+
+########################################################################################
+############ PANEL PRAWY ###############################################################
+
+        MDNavigationDrawer:
+            id: param_drawer
+            anchor: "right"
+            width: root.width / 1.2
+            radius: [0, 0, 0, 0]
+
+            ScrollView:
+                MDBoxLayout:
+                    orientation: 'vertical'
+                    padding: 10
+                    size_hint_y: None
+                    height: self.minimum_height  # Sprawia, że cała zawartość jest przyciągnięta do góry
+                    spacing: 10
+
+                    # Wybór serwisów
+                    MDLabel:
+                        text: 'Wybór serwisów'
+                        font_style: 'Subtitle1'
+                        halign: 'left'
+                        size_hint_y: None
+                        height: dp(60)
+
+                    MDBoxLayout:
+                        orientation: 'vertical'
+                        spacing: 4
+                        size_hint_y: None
+                        height: self.minimum_height  # Automatyczna wysokość
+
+                        BoxLayout:
+                            orientation: 'horizontal'
+                            size_hint_y: None
+                            height: dp(40)
+               
+                            MDCheckbox:
+                                id: domiporta
+                                size_hint_x: 0.2
+                                active: True
+                                on_active: app.ui_manager.toggle_service('domiporta.pl', self.active)
+                            MDLabel:
+                                text: 'domiporta.pl'
+                                size_hint_x: 0.8
+                                halign: 'left'
+
+                        BoxLayout:
+                            orientation: 'horizontal'
+                            size_hint_y: None
+                            height: dp(40)
+                            MDCheckbox:
+                                id: morizon
+                                size_hint_x: 0.2
+                                active: True
+                                on_active: app.ui_manager.toggle_service('morizon.pl', self.active)
+                            MDLabel:
+                                text: 'morizon.pl'
+                                size_hint_x: 0.8
+                                halign: 'left'
+
+                        BoxLayout:
+                            orientation: 'horizontal'
+                            size_hint_y: None
+                            height: dp(40)
+                            MDCheckbox:
+                                id: nieruchomosci_online
+                                size_hint_x: 0.2
+                                active: True
+                                on_active: app.ui_manager.toggle_service('nieruchomosci-online.pl', self.active)
+                            MDLabel:
+                                text: 'nieruchomosci-online.pl'
+                                size_hint_x: 0.8
+                                halign: 'left'
+
+                        BoxLayout:
+                            orientation: 'horizontal'
+                            size_hint_y: None
+                            height: dp(40)
+                            MDCheckbox:
+                                id: otodom
+                                size_hint_x: 0.2
+                                active: True
+                                on_active: app.ui_manager.toggle_service('otodom.pl', self.active)
+                            MDLabel:
+                                text: 'otodom.pl'
+                                size_hint_x: 0.8
+                                halign: 'left'
+
+                        BoxLayout:
+                            orientation: 'horizontal'
+                            size_hint_y: None
+                            height: dp(40)
+                            MDCheckbox:
+                                id: gratka
+                                size_hint_x: 0.2
+                                active: True
+                                on_active: app.ui_manager.toggle_service('gratka.pl', self.active)
+                            MDLabel:
+                                text: 'gratka.pl'
+                                size_hint_x: 0.8
+                                halign: 'left'
+
+                    MDSeparator:
+                        height: 2
+
+########################################################################################################
+######################## Sortowanie ####################################################################
+
+                    MDLabel:
+                        text: 'Sortowanie'
+                        font_style: 'Subtitle1'
+                        halign: 'left'
+                        size_hint_y: None
+                        height: dp(60)
+
+                    MDBoxLayout:
+                        orientation: 'vertical'
+                        spacing: 10
+                        size_hint_y: None
+                        height: self.minimum_height  # Automatyczna wysokość
+
+                        MDBoxLayout:
+                            orientation: 'horizontal'
+                            size_hint_y: None
+                            height: dp(40)
+                            MDCheckbox:
+                                id: price
+                                group: "sort"
+                                size_hint_x: 0.2
+                                active: True
+                                on_active: app.ui_manager.set_sorting('price', self.active)
+                            MDLabel:
+                                text: 'Cena - rosnąco'
+                                size_hint_x: 0.8
+                                halign: 'left'
+
+                        MDBoxLayout:
+                            orientation: 'horizontal'
+                            size_hint_y: None
+                            height: dp(40)
+                            MDCheckbox:
+                                id: price_m2
+                                group: "sort"
+                                size_hint_x: 0.2
+                                on_active: app.ui_manager.set_sorting('price_m2', self.active)
+                            MDLabel:
+                                text: 'Cena za m² - rosnąco'
+                                size_hint_x: 0.8
+                                halign: 'left'
+
+                        MDBoxLayout:
+                            orientation: 'horizontal'
+                            size_hint_y: None
+                            height: dp(40)
+                            MDCheckbox:
+                                id: area
+                                group: "sort"
+                                size_hint_x: 0.2
+                                on_active: app.ui_manager.set_sorting('area', self.active)
+                            MDLabel:
+                                text: 'Metraż - malejąco'
+                                size_hint_x: 0.8
+                                halign: 'left'
+
+                                        
+                    MDSeparator:
+                        height: 2
+
+########################################################################################################
+######################## Ilość ofert do wyświetlenia ###################################################
+
+                    MDLabel:
+                        text: "Liczba ofert do wyświetlenia"
+                        font_style: 'Subtitle1'
+                        halign: 'left'
+                        size_hint_y: None
+                        height: dp(60)  # Automatyczne dopasowanie wysokości do tekstu
+
+                    MDBoxLayout:
+                        orientation: 'horizontal'
+                        spacing: 10
+                        size_hint_y: None
+                        # padding: dp(10)
+                        height: self.minimum_height  # Automatyczna wysokość
+
+                        MDRaisedButton:
+                            id: button_25
+                            text: "25"
+                            check: True
+                            text_color: 1, 1, 1, 1
+                            md_bg_color: app.theme_cls.primary_color
+                            on_release: app.ui_manager.set_offer_limit(25, self)
+
+                        MDRaisedButton:
+                            id: button_50
+                            text: "50"
+                            check: True
+                            text_color: 0, 0, 0, 1
+                            md_bg_color: 0.9, 0.9, 0.9, 1
+                            on_release: app.ui_manager.set_offer_limit(50, self)
+
+                        MDRaisedButton:
+                            id: button_75
+                            text: "75"
+                            check: True
+                            text_color: 0, 0, 0, 1
+                            md_bg_color: 0.9, 0.9, 0.9, 1
+                            on_release: app.ui_manager.set_offer_limit(75, self)
+
+                        MDRaisedButton:
+                            id: button_100
+                            text: "100"
+                            check: True
+                            text_color: 0, 0, 0, 1
+                            md_bg_color: 0.9, 0.9, 0.9, 1
+                            on_release: app.ui_manager.set_offer_limit(100, self)
+
+
+                    MDSeparator:
+                        height: 2
+
+########################################################################################################
+######################## Przyciski #####################################################################
+
+                    MDLabel:
+                        text: 'Przejdź do ekranu:'
+                        font_style: 'Subtitle1'
+                        halign: 'left'
+                        size_hint_y: None
+                        height: dp(60)
+
+                    MDBoxLayout:
+                        orientation: 'horizontal'
+                        halign: 'left'
+                        size_hint_y: None
+                        height: dp(40)
+                        
+                        spacing: 10
+                        # padding: dp(40)
+                        MDRaisedButton:
+                            size_hint_y: None
+                            text: "Oferty"
+                            pos_hint: {"center_x": .5}
+                            on_release: app.ui_manager.load_offers()  # Wywołuje funkcję ładującą oferty
+
+                        MDRaisedButton:
+                            size_hint_y: None
+                            text: "Ulubione"
+                            pos_hint: {"center_x": .5}
+                            on_release: app.ui_manager.load_favorites()  # Wywołuje funkcję ładującą ulubione
+
+                        MDRaisedButton:
+                            size_hint_y: None
+                            text: "Usunięte"
+                            pos_hint: {"center_x": .5}
+                            on_release: app.ui_manager.load_blacklist()  # Wywołuje funkcję ładującą czarną listę
+
+                    BoxLayout:
+                        orientation: 'vertical'
+                        size_hint_y: 1  # To wypełni resztę ekranu
+
+##########################################################################################################
+###################### Label na dole ekranu z informacjami ###############################################
+
+                    MDLabel:
+                        size_hint_y: None
+                        text: "[color=#000000][size=40]Oprogramowanie wykonane w ramach pracy inżynierskiej.[/size][/color]"
+                        markup: True
+                        halign: 'center'
+                        valign: 'middle'
+                    MDLabel:
+                        size_hint_y: None
+                        text: "[color=#000000][size=40] Karol Czerwień. Kraków - 29.09.2024[/size][/color]"
+                        markup: True
+                        halign: 'center'
+                        valign: 'middle'
+                    MDLabel:
+                        size_hint_y: None
+                        text: "[color=#036ffc][size=40]karol.czerwien@gmail.com[/size][/color]"
+                        markup: True
+                        halign: 'center'
+                        valign: 'middle'
+
