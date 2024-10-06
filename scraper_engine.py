@@ -2,6 +2,7 @@ import sqlite3
 import requests
 from bs4 import BeautifulSoup as bs
 
+
 class NieruchomosciScraper:
     user_agent = {"User-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.97 Safari/537.36"}
 
@@ -62,7 +63,7 @@ class NieruchomosciScraper:
         for page in range(1, self.num_pages + 1):
             url = f"{service_url}/pl/wyniki/sprzedaz/mieszkanie/{self.selected_district.lower()}/{selected_region}/{selected_city_corrected.lower()}?distanceRadius=0&limit=72&ownerTypeSingleSelect=ALL&priceMin={self.price_min}&priceMax={self.price_max}&areaMin={self.area_min}&areaMax={self.area_max}&roomsNumber=%5B{dict_rooms[self.rooms_number]}%5D&by=DEFAULT&direction=DESC&viewType=listing&page={page}"
             soup = self.fetch_page(url)
-
+            print(url)
             offers = soup.find_all("article", {"data-cy": "listing-item"})
             for offer in offers:
                 offer_item = offer.find("section")
@@ -259,7 +260,7 @@ class NieruchomosciScraper:
 # num_pages = 1
 # db_path = "database.db"
 
-# # temp = NieruchomosciScraper(selected_city, selected_district, price_min, price_max, area_min, area_max, rooms_number, num_pages, db_path).scrape_otodom() # OK 71
+# temp = NieruchomosciScraper(selected_city, selected_district, price_min, price_max, area_min, area_max, rooms_number, num_pages, db_path).scrape_otodom() # OK 71
 # # temp = NieruchomosciScraper(selected_city, selected_district, price_min, price_max, area_min, area_max, rooms_number, num_pages, db_path).scrape_domiporta() # OK 36
 # temp = NieruchomosciScraper(selected_city, selected_district, price_min, price_max, area_min, area_max, rooms_number, num_pages, db_path).scrape_nieruchomosci_online()  # OK 42
 # # temp = NieruchomosciScraper(selected_city, selected_district, price_min, price_max, area_min, area_max, rooms_number, num_pages, db_path).scrape_morizon()  # OK 29

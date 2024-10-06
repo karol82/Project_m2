@@ -27,54 +27,6 @@ class SzukajMieszkaniaApp(MDApp):
         self.ui_manager.filter_and_display_offers()
         self.ui_manager.update_count()
 
-    # def start_scraping_with_loading(self, city, district, price_min, price_max, area_min, area_max, rooms, services):
-    #     """Rozpoczyna proces scrapowania i wyświetla ekran ładowania z paskiem postępu."""
-    #     self.root.ids.nav_drawer.set_state("close")
-    #     self.root.ids.screen_manager.current = "loading_screen"  # Przełącz na ekran ładowania
-    #     self.progress = 0  # Zresetuj pasek postępu
-    #     self.offer_count = 0
-    #     self.root.ids.progress_bar.value = 0
-    #     self.root.ids.offer_count_label.text = "Wczytano 0 ofert"
-
-    #     # Uruchamiamy scrapowanie w osobnym wątku, aby nie blokować interfejsu użytkownika
-    #     threading.Thread(target=self.start_scraping, args=(city, district, price_min, price_max, area_min, area_max, rooms, services)).start()
-
-    # def start_scraping(self, city, district, price_min, price_max, area_min, area_max, rooms, services):
-    #     """Rozpoczyna faktyczny proces scrapowania z aktualizacją paska postępu."""
-    #     num_services = len(services)
-    #     progress_step = 100 / num_services  # Krok paska postępu dla każdego serwisu
-
-    #     def update_progress(service_name):
-    #         self.progress += progress_step
-    #         Clock.schedule_once(lambda dt: self.update_ui_progress(service_name), 0)
-
-    #     # Rozpocznij scrapowanie
-    #     for i, service in enumerate(services):
-    #         update_progress(service)  # Zaktualizuj pasek postępu i tekst
-    #         offers = self.scraper_manager.start_scraping(city, district, price_min, price_max, area_min, area_max, rooms, [service])
-    #         self.current_offers.extend(offers)
-    #         self.offer_count += len(offers)
-    #         Clock.schedule_once(lambda dt: self.update_offer_count(), 0)
-
-    #     # Po zakończeniu wróć na ekran wyników
-    #     Clock.schedule_once(lambda dt: self.finish_scraping(), 0)
-
-    # def update_ui_progress(self, service_name):
-    #     """Aktualizuje pasek postępu i tekst na ekranie ładowania."""
-    #     self.root.ids.progress_bar.value = self.progress
-    #     self.root.ids.loading_label.text = f"Ładowanie ofert z serwisu: {service_name}..."
-
-    # def update_offer_count(self):
-    #     """Aktualizuje licznik wczytanych ofert."""
-    #     self.root.ids.offer_count_label.text = f"Wczytano {self.offer_count} ofert"
-
-    # def finish_scraping(self):
-    #     """Kończy scrapowanie i przełącza widok na ekran wyników."""
-    #     self.ui_manager.filter_and_display_offers()
-    #     self.root.ids.screen_manager.current = "offers"  # Przełącz na ekran wyników
-    #     self.ui_manager.filter_and_display_offers()  # Wyświetl wyniki
-    #     self.ui_manager.update_count()  # Aktualizuj liczbę ofert
-
     def start_scraping_with_loading(self, city, district, price_min, price_max, area_min, area_max, rooms, services, num_pages=1):
         """Rozpoczyna proces scrapowania i wyświetla ekran ładowania z paskiem postępu."""
         self.root.ids.screen_manager.current = "loading_screen"  # Przełącz na ekran ładowania
@@ -87,29 +39,6 @@ class SzukajMieszkaniaApp(MDApp):
         # Uruchamiamy scrapowanie w osobnym wątku, aby nie blokować interfejsu użytkownika
         threading.Thread(target=self.scrape_offers_in_thread, args=(city, district, price_min, price_max, area_min, area_max, rooms, services, num_pages)).start()
 
-    # def scrape_offers_in_thread(self, city, district, price_min, price_max, area_min, area_max, rooms, services):
-    #     """Scrapowanie w tle i aktualizowanie UI."""
-    #     num_services = len(services)
-    #     progress_step = 100 / num_services  # Krok paska postępu dla każdego serwisu
-    #     all_offers = []  # Lista do zbierania wszystkich ofert z serwisów
-
-    #     for service in services:
-    #         # Scrapujemy oferty z aktualnego serwisu
-    #         offers = self.scraper_manager.start_scraping(city, district, price_min, price_max, area_min, area_max, rooms, [service])
-    #         all_offers.extend(offers)  # Dodajemy oferty do listy
-
-    #         # Zaktualizuj postęp i licznik ofert
-    #         self.progress += progress_step
-    #         Clock.schedule_once(lambda dt, srv=service, off=offers: self.update_progress(srv, off), 0)
-
-    #     # # Po zakończeniu scrapowania wywołaj zapis do bazy
-    #     # Clock.schedule_once(lambda dt, offers=all_offers: self.save_offers_to_database(offers), 0)
-
-    #     # Sprawdzenie, czy nie ma ofert
-    #     if len(all_offers) == 0:
-    #         Clock.schedule_once(lambda dt: self.handle_no_offers(), 0)
-    #     else:
-    #         Clock.schedule_once(lambda dt, offers=all_offers: self.save_offers_to_database(offers), 0)
     def scrape_offers_in_thread(self, city, district, price_min, price_max, area_min, area_max, rooms, services, num_pages):
         """Scrapowanie w tle i aktualizowanie UI."""
         num_services = len(services)
